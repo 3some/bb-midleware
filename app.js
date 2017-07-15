@@ -8,6 +8,9 @@ var session = require('express-session');
 var app = express();
 var fs = require('fs');
 var fp = require('path');
+
+
+
 //var Odoo = require('node-odoo');
 var Odoo = require('odoo-xmlrpc');
 var odoo = new Odoo({

@@ -10,6 +10,28 @@ let odooObject2 = {
 };
 
 
+
+router.post('/', function (req, res) {
+  console.error("vao day ro i2 222222222", req.body.data);
+  let line_vals = req.body.data;
+  var odoo = new Odoo(odooObject2);
+  odoo.connect(function (err) {
+    if (err) {
+      return console.log(err);
+    }
+    odoo.execute_kw('sale.order', 'create', [line_vals], function (err, value) {
+      if (err) {
+        console.log("err err err", err);
+        return res.json({err: true, data: err});
+      }
+      //console.error(value);
+      res.json({err: false, data: "Thành công! Vào admin để xem id" + value, value: value});
+    });
+  });
+})
+
+
+/*
 router.get('/', function (req, res) {
   console.error("vao day ro i2 222222222");
   let username = req.session.username;
@@ -37,17 +59,6 @@ router.get('/', function (req, res) {
 
     let pricePro = req.query.price;
     let levelUser = req.query.level;
-
-    // if(levelUser == 'lv2') {
-    //   pricePro = pricePro/100 * 95;
-    // }
-    //
-    // if(levelUser == 'lv3') {
-    //   pricePro = pricePro/100 * 90;
-    // }
-
-  console.error("Price la", pricePro);
-
 
     let line_vals = [{
       "partner_id": req.session.userId,
@@ -108,6 +119,6 @@ router.get('/', function (req, res) {
 
 });
 
-
+*/
 
 module.exports = router;

@@ -5,11 +5,11 @@ let odooObject = {
     url: 'localhost',
     port: 8069,
     db: 'odoo',
-   	username: 'thanh12@gmail.com',
-    password: '123'
+   	username: 'khacthanh234@gmail.com',
+    password: 'khacthanh'
 };
 
-
+/*
 
 router.get('/', function(req, res) {
 	console.error("vao day roi",req.session);
@@ -25,8 +25,8 @@ router.get('/', function(req, res) {
 	var odoo = new Odoo(odooObject);
 
 	odoo.connect(function (err) {
-    if (err) { 
-    	console.log(err);  
+    if (err) {
+    	console.log(err);
     	return res.render('index', {
     	    title: 'express-hbs example',
     	    err: "Login Error! Try again!"
@@ -46,19 +46,19 @@ router.get('/', function(req, res) {
     odoo.execute_kw('product.template', 'search_read', params, function (err, value) {
       if (err) { return res.json({err : true, data: err}); }
       	// console.error(value);
-      //res.json({ err: false, data: value});
-        res.render('product', {
-            title: 'express-hbs example',
-            err: '',
-            data: value
-         });
+      res.json({ err: false, data: value});
+        // res.render('product', {
+        //     title: 'express-hbs example',
+        //     err: '',
+        //     data: value
+        //  });
     });
   });
-    
+
 });
 
+*/
 
-/*
 router.get('/', function(req, res) {
     // console.error("vao day roi",req.session);
     // let username = req.session.username;
@@ -104,8 +104,6 @@ router.get('/', function(req, res) {
   });
     
 });
-*/
-
 
 
 module.exports = router;

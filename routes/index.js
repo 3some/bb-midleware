@@ -51,7 +51,7 @@ router.post('/', function(req, res) {
     inParams.push(1);  //Limit
     var params = [];
     params.push(inParams);
-    var odoo2= new Odoo(odooObject2);
+    var odoo2 = new Odoo(odooObject2);
     odoo2.connect(function (err) {
       if (err) {
         console.log(err);
@@ -74,7 +74,7 @@ router.post('/', function(req, res) {
         sessionAcc.username = username;
         sessionAcc.password = password;
         sessionAcc.userId = value[0].id;
-        console.error("userId userId userId", value[0].id)
+        console.error("userId userId userId", value[0].id);
         res.redirect('/product');
       });
     });

@@ -74,11 +74,11 @@ router.get('/', function(req, res) {
 
     odoo.connect(function (err) {
     if (err) { 
-        console.log(err);  
-        return res.render('index', {
-            title: 'express-hbs example',
-            err: "Login Error! Try again!"
-          });
+      console.log(err);
+      return res.render('index', {
+        title: 'express-hbs example',
+        err: "Login Error! Try again!"
+      });
     }
 
     console.log('Connected to Odoo server.');

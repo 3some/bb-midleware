@@ -18,7 +18,7 @@ var odoo = new Odoo({
     password: 'khacthanh'
 });
 
-var credentials = require('./config/login');
+var config = require('./config/login');
 
 var passport = require('passport'),
   FacebookStrategy = require('passport-facebook').Strategy;
@@ -52,12 +52,12 @@ app.use(function(req, res, next) {
 app.get('/auth/facebook', passport.authenticate('facebook', { scope: ["email"] }));
 
 app.get('/auth/facebooks/callback', passport.authenticate('facebook',
-  { failureRedirect: '/auth/facebook', successRedirect: '/profile',}));
+  { failureRedirect: '/auth/facebook', successRedirect: '/profile'}));
 
 passport.use(new FacebookStrategy({
-    clientID: credentials.facebook.app_id,
-    clientSecret: credentials.facebook.app_secret,
-    callbackURL: 'http://localhost:3000/auth/facebooks/callback',
+    clientID: config.facebook.app_id,
+    clientSecret: config.facebook.app_secret,
+    callbackURL: '/auth/facebooks/callback',
     profileFields:['id','emails', 'displayName']
   }, function(accessToken, refreshToken, profile, done) {
     console.error("me me me me meme ", profile);
@@ -119,7 +119,7 @@ const productRouter = require('./routes/product');
 const orderRouter = require('./routes/order');
 
 app.use('/profile', function(req, res) {
-  res.redirect(`http://localhost:3001/getToken?token=${req.user.tokenUser}&username=${req.user.displayName}&userIdOdoo=${req.user.userIdOdoo}`);
+  res.redirect(`${config.host}/getToken?token=${req.user.tokenUser}&username=${req.user.displayName}&userIdOdoo=${req.user.userIdOdoo}`);
   res.json({user: req.user });
 });
 app.use('/index', indexRouter);
@@ -128,7 +128,7 @@ app.use('/product', productRouter);
 app.use('/order', orderRouter);
 
 
-app.use('/get-product', (req, res) => {
+app.use('/get-product', function(req, res) {
   odoo.connect(function (err) {
   if (err) { return console.log("errorr laaaaaa",err); }
     var inParams = [];

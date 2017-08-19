@@ -8,17 +8,17 @@ var session = require('express-session');
 var app = express();
 var fs = require('fs');
 var jwt = require('jsonwebtoken');
+var config = require('./config/login');
 
 var Odoo = require('odoo-xmlrpc');
 var odoo = new Odoo({
     url: 'localhost',
     port: 8069,
-    db: 'odoo',
+    db: config.database,
     username: 'khacthanh234@gmail.com',
     password: 'khacthanh'
 });
 
-var config = require('./config/login');
 
 var passport = require('passport'),
   FacebookStrategy = require('passport-facebook').Strategy;
@@ -64,15 +64,15 @@ passport.use(new FacebookStrategy({
     profile.tokenUser = jwt.sign({ id: profile.id, iat: Math.floor(Date.now() / 1000)- 30 }, 'sggdsdjh');
 
     var inParams = [];
-    inParams.push([['login', '=', profile.id]]);
-    inParams.push(['name']);
+    inParams.push([['x_fbId', '=', profile.id]]);
+    inParams.push(['name', 'x_fbId', 'user_id']);
     inParams.push(0);  //offset
     inParams.push(1);  //Limit
     var params = [];
     params.push(inParams);
     odoo.connect(function (err) {
       if (err) { return console.log(err); }
-      odoo.execute_kw('res.users', 'search_read', params, function (err, value) {
+      odoo.execute_kw('res.partner', 'search_read', params, function (err, value) {
         if (err) {
           console.log("errerrerrerr", err);
           return done(err, profile);
@@ -80,23 +80,25 @@ passport.use(new FacebookStrategy({
 
         if(value.length < 1) {
           var inParams = [];
-          inParams.push({'name': profile.displayName, 'login': profile.id,
-            'company_ids':[1], 'company_id':1});
+          inParams.push({ 'name': profile.displayName, 'x_fbId': profile.id, 'active' : false });
           var params = [];
           params.push(inParams);
-          odoo.execute_kw('res.users', 'create', params, function (err, value) {
+          odoo.execute_kw('res.partner', 'create', params, function (err, value) {
             if (err) {
-              console.log('res.users',err);
+              console.log('res.partner',err);
               return done(err, profile);
             }
             else {
               console.log('Result: ', value);
-              profile.userIdOdoo = value[0].id;
+              profile.userIdOdoo = value;
+              profile.userIdSale = 1;
               return done(null, profile);
             }
           });
         } else {
+          console.error("value[0] value[0]", value[0]);
           profile.userIdOdoo = value[0].id;
+          profile.userIdSale = value[0].user_id;
           return done(null, profile);
         }
       });
@@ -119,7 +121,8 @@ const productRouter = require('./routes/product');
 const orderRouter = require('./routes/order');
 
 app.use('/profile', function(req, res) {
-  res.redirect(`${config.host}/getToken?token=${req.user.tokenUser}&username=${req.user.displayName}&userIdOdoo=${req.user.userIdOdoo}`);
+  res.redirect(`${config.host}/getToken?token=${req.user.tokenUser}
+    &username=${req.user.displayName}&userIdOdoo=${req.user.userIdOdoo}&userIdSale=${req.user.userIdSale}`);
   res.json({user: req.user });
 });
 app.use('/index', indexRouter);

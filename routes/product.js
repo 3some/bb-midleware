@@ -1,10 +1,11 @@
 var express = require('express');
 var router = express.Router();
 var Odoo = require('odoo-xmlrpc');
+var config = require('../config/login');
 let odooObject = {
     url: 'localhost',
     port: 8069,
-    db: 'odoo',
+    db: config.database,
    	username: 'khacthanh234@gmail.com',
     password: 'khacthanh'
 };
